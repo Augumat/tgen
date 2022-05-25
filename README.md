@@ -1,2 +1,2 @@
-# thumbnail-generator-v2
-Generate highly customizable formulaic thumbnails in a user-friendly GUI, individually or in batches!
+# Aug's Thumbnail Generator (TGen)
+Generate highly customizable formulaic thumbnails with a user-friendly graphical interface, individually or in batches!
