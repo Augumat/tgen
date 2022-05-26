@@ -1,0 +1,37 @@
+echo > Setup required Environment
+echo -------------------------------------
+SET RAYLIB_PATH=C:\raylib\raylib
+SET COMPILER_PATH=C:\raylib\w64devkit\bin
+ENV_SET PATH=$(COMPILER_PATH)
+SET CC=gcc
+SET CFLAGS=-s -static -Os -std=c99 -Wall -I$(RAYLIB_PATH)\src -Iexternal -DPLATFORM_DESKTOP -Wl,--subsystem,windows
+SET LDFLAGS=-lraylib -lopengl32 -lgdi32 -lwinmm
+cd $(CURRENT_DIRECTORY)
+echo
+echo > Clean latest build
+echo ------------------------
+cmd /c IF EXIST ../out/tgen.exe del /F ../out/tgen.exe
+echo
+echo > Saving Current File
+echo -------------------------
+npp_save
+echo
+echo > Compile program
+echo -----------------------
+windres windows/tgen.rc -O coff -o tgen.res
+$(CC) -o tgen.exe $(FILE_NAME) $(CFLAGS) $(LDFLAGS) windows/resource.h tgen.res windows/winwrapper.h windows/winwrapper.c
+echo
+echo > Move program files
+echo -----------------------
+cmd /c IF EXIST tgen.exe move tgen.exe ../out/tgen.exe
+echo
+echo > Reset Environment
+echo --------------------------
+cmd /c IF EXIST tgen.res del /F tgen.res
+cmd /c IF EXIST tgen.exe del /F tgen.exe
+ENV_UNSET PATH
+echo
+echo > Execute program
+echo -----------------------
+cd ../out
+cmd /c IF EXIST tgen.exe tgen.exe
