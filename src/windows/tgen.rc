@@ -1,0 +1,7 @@
+#include "resource.h"
+
+// exe icon
+ICO_TG2 ICON "..\\..\\res\\tgen_logo.ico"
+
+// window icon
+WICO_TG2 PNG_RESOURCE "..\\..\\res\\window_icon.png"
