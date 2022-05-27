@@ -315,16 +315,16 @@ int main()
         }
         // handle link buttons
         if (githubPressed) {
-            OpenURLHidden("https://github.com/Augumat/thumbnail-generator-v2");
+            OpenURLHidden("https://github.com/Augumat/tgen");
             githubPressed = !githubPressed;
         }
         if (helpPressed) {
-            //OpenURLHidden("https://github.com/Augumat/thumbnail-generator-v2/wiki");
+            //OpenURLHidden("https://github.com/Augumat/tgen/wiki");
             // TODO: implement when going public
             helpPressed = !helpPressed;
         }
         if (bugsPressed) {
-            OpenURLHidden("https://github.com/Augumat/thumbnail-generator-v2/issues");
+            OpenURLHidden("https://github.com/Augumat/tgen/issues");
             bugsPressed = !bugsPressed;
         }
         // handle switching format info
