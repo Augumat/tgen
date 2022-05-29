@@ -1,5 +1,4 @@
 #include <stdlib.h>
-//#include <stdio.h>
 #include <ctype.h>
 #include "ray/raylib.h"
 #include "ray/raygui.h"
@@ -30,6 +29,7 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
         eLen++;
     }
     
+    // ELEMENT LIST CULLING (SEARCH) ------------------------------------------
     // remove elements that do not contain query as a substring (only matching
     // elements should be displayed in the dropdown) and keep track of the
     // original indexes of each element in the output list
@@ -100,6 +100,7 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
     }
     // store how many elements need to be displayed
     visibleCount = dstElem;
+    // ------------------------------------------------------------------------
     
     // define bounds for open and closed state
     Rectangle itemBounds = bounds;
@@ -119,7 +120,7 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
     Vector2 mousePoint = GetMousePosition();
     if (editMode) {
         state = GUI_STATE_PRESSED;
-        // UPDATE TEXT BOX =====================================
+        // updates for the text box
         int key = GetCharPressed();
         int keyCount = (int)strlen(query);
         // Only allow keys in range [32..125]
@@ -143,22 +144,27 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
                 if (keyCount < 0) keyCount = 0;
             }
         }
+        // use arrow keys to move up or down the list of visible options
+        if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) {
+            if (IsKeyPressed(KEY_UP) && cellSelected > 0) cellSelected--;
+            if (IsKeyPressed(KEY_DOWN) && cellSelected < (visibleCount - 1)) cellSelected++;
+            *choice = idxInOriginal[cellSelected];
+        }
         // autofill first matching choice if hitting enter or clicking off
         if (IsKeyPressed(KEY_ENTER) || (!CheckCollisionPointRec(mousePoint, boundsOpen) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))) {
-            *choice = idxInOriginal[0];
+            *choice = idxInOriginal[cellSelected];
             query[0] = '\0';
             pressed = true;
         }
-        // Check text alignment to position cursor properly
+        // check text alignment to position cursor properly
         int textAlignment = GuiGetStyle(TEXTBOX, TEXT_ALIGNMENT);
         if (textAlignment == GUI_TEXT_ALIGN_CENTER) {
             cursor.x = bounds.x + (GetTextWidth(query) / 2) + (bounds.width / 2) + 1;
         } else if (textAlignment == GUI_TEXT_ALIGN_RIGHT) {
             cursor.x = bounds.x + bounds.width - GuiGetStyle(TEXTBOX, TEXT_INNER_PADDING);
         }
-        // END =================================================
         
-        // UPDATE COMBO BOX ====================================
+        // updates for the expanded list panel
         if ((state != GUI_STATE_DISABLED) && (editMode || !guiLocked) && (eCount > 1)) {
             state = GUI_STATE_PRESSED;
             // Check if mouse has been pressed or released outside limits
@@ -188,7 +194,6 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
             }
             itemBounds = bounds;
         }
-        // END =================================================
     } else {
         // if the box isn't currently selected, check if it was clicked
         if (CheckCollisionPointRec(mousePoint, bounds)) {
