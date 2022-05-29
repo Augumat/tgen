@@ -7,8 +7,10 @@
 #include "cyber.h"
 #include "windows/resource.h"
 #include "windows/winwrapper.h"
-//#include "augui.h"
+#include "augui.h"
 #include "generator.h"
+// testing
+//#include <stdio.h>
 
 
 
@@ -25,9 +27,7 @@ static const Rectangle windowDims = (Rectangle){ 0, 0, 636, 399 };
 static const Rectangle windowTitleRect = (Rectangle){ 3, 0, 512, 24 };
 // editor view
 // - topbar
-static const Rectangle githubRect = (Rectangle){ 555, 3, 18, 18 };
-static const Rectangle helpRect = (Rectangle){ 575, 3, 18, 18 };
-static const Rectangle bugsRect = (Rectangle){ 595, 3, 18, 18 };
+static const Rectangle helpRect = (Rectangle){ 595, 3, 18, 18 };
 // - format settings zone
 static const Rectangle formatZoneRect = (Rectangle){ 5, 36, 336, 40 };
 static const Rectangle coreAssetsRect = (Rectangle){ 13, 44, 144, 24 };
@@ -40,20 +40,20 @@ static const Rectangle matchZoneRect = (Rectangle){ 5, 88, 626, 74 };
 static const Rectangle matchZoneVsRect = (Rectangle){ 204, 112, 16, 24 };
 static const Rectangle matchZoneInRect = (Rectangle){ 417, 112, 16, 24 };
 // - - player 1
-static const Rectangle p1nameRect = (Rectangle){ 13, 96, 186, 32 };
-static const Rectangle p1fighterRect = (Rectangle){ 13, 130, 160, 24 };
-static const Rectangle p1costumeRect = (Rectangle){ 175, 130, 24, 24 };
+static const Rectangle p1NameRect = (Rectangle){ 13, 96, 186, 32 };
+static const Rectangle p1FighterRect = (Rectangle){ 13, 130, 160, 24 };
+static const Rectangle p1CostumeRect = (Rectangle){ 175, 130, 24, 24 };
 // - - player 2
-static const Rectangle p2nameRect = (Rectangle){ 226, 96, 186, 32 };
-static const Rectangle p2fighterRect = (Rectangle){ 226, 130, 160, 24 };
-static const Rectangle p2costumeRect = (Rectangle){ 388, 130, 24, 24 };
+static const Rectangle p2NameRect = (Rectangle){ 226, 96, 186, 32 };
+static const Rectangle p2FighterRect = (Rectangle){ 226, 130, 160, 24 };
+static const Rectangle p2CostumeRect = (Rectangle){ 388, 130, 24, 24 };
 // - - tournament and match designation
 static const Rectangle tournamentNameRect = (Rectangle){ 437, 96, 160, 24 };
 static const Rectangle tournamentNumberRect = (Rectangle){ 599, 96, 24, 24 };
 static const Rectangle matchDesignationRect = (Rectangle){ 437, 122, 186, 32 };
 // - actions zone
 static const Rectangle actionZoneRect = (Rectangle){ 391, 174, 240, 64 };
-static const Rectangle resetRect = (Rectangle){ 399, 182, 110, 48 };
+static const Rectangle clearRect = (Rectangle){ 399, 182, 110, 48 };
 static const Rectangle generateRect = (Rectangle){ 513, 182, 110, 48 };
 // - preview zone
 static const Rectangle previewZoneRect = (Rectangle){ 5, 174, 378, 220 };
@@ -71,43 +71,45 @@ static const Rectangle batchPanelRect = (Rectangle){ 399, 258, 224, 128 };
 static bool windowIsOpen = true;
 static char* windowTitleText = "Aug's Thumbnail Generator";
 // - - topbar buttons
-static bool githubPressed = false;
 static bool helpPressed = false;
-static bool bugsPressed = false;
 // - format settings zone
 // - - core asset selector
 static bool coreAssetsEditMode = false;
-static int coreAssetsActive = 0;
-static char* coreAssetsList = " core1; core2";//TODO: dynamic
+static int coreAssetsChoice = 0;
+static char coreAssetsQuery[128] = "";
+static char* coreAssetsList = "core1;core2";//TODO: dynamic
 // - - template asset selector
 static bool templateAssetsEditMode = false;
-static int templateAssetsActive = 0;
-static char* templateAssetsList = " template1; template2; template3";//TODO: dynamic
+static int templateAssetsChoice = 0;
+static char templateAssetsQuery[128] = "";
+static char* templateAssetsList = "template1;template2;template3";//TODO: dynamic
 // - - reload formats button
 static bool reloadAssetsPressed = false;
 // - player zone
 // - - player 1 name input
-static bool p1nameEditMode = false;
-static char p1name[128] = "Player 1";
+static bool p1NameEditMode = false;
+static char p1Name[128] = "Player 1";
 // - - player 1 fighter selector
-static bool p1fighterEditMode = false;
-static int p1fighterActive = 0;
-static char* p1fighterDisplayList = "; fighter1; fighter2; fighter3";//TODO: dynamic
+static bool p1FighterEditMode = false;
+static int p1FighterChoice = 0;
+static char p1FighterQuery[128] = "";
+static char* p1FighterList = "Mario;Luigi;Bowser;Peach;Daisy;Bowser Jr.;Pirahna Plant;Wario";//TODO: dynamic
 // - - player 1 costume selector
-static bool p1costumeEditMode = false;
-static int p1costumeActive = 0;
-static char* p1costumeDisplayList = "";
+static bool p1CostumeEditMode = false;
+static int p1CostumeActive = 0;
+static char* p1CostumeList = "";
 // - - player 2 name input
-static bool p2nameEditMode = false;
-static char p2name[128] = "Player 2";
+static bool p2NameEditMode = false;
+static char p2Name[128] = "Player 2";
 // - - player 2 fighter selector
-static bool p2fighterEditMode = false;
-static int p2fighterActive = 0;
-static char* p2fighterDisplayList = "; fighter1; fighter2; fighter3";//TODO: dynamic
+static bool p2FighterEditMode = false;
+static int p2FighterChoice = 0;
+static char p2FighterQuery[128] = "";
+static char* p2FighterList = "Mario;Luigi;Bowser;Peach;Daisy;Bowser Jr.;Pirahna Plant;Wario";//TODO: dynamic
 // - - player 2 costume selector
-static bool p2costumeEditMode = false;
-static int p2costumeActive = 0;
-static char* p2costumeDisplayList = "";
+static bool p2CostumeEditMode = false;
+static int p2CostumeActive = 0;
+static char* p2CostumeList = "";
 // - - tournament name box
 static bool tournamentNameEditMode = false;
 static char tournamentNameText[128] = "Tournament Number";
@@ -118,13 +120,12 @@ static int tournamentNumberValue = 0;
 static bool matchDesignationEditMode = false;
 static char matchDesignationText[128] = "Match Title";
 // - actions zone
-static bool resetPressed = false;
+static bool clearPressed = false;
 static bool generatePressed = false;
 // - preview zone
-//static Image generatedThumbnail = { 0 };
 static RenderTexture2D previewRenderTexture = { 0 };
 // - batch zone
-static char* batchPanelText = "Drag batch files here";
+static char batchPanelText[128] = "Drag batch files here";
 //--------------------------------------------------------------------------------------
 
 // format state vars
@@ -145,7 +146,7 @@ Image LoadImageFromResource(unsigned long resourceId)
 }
 
 // resets the input fields 
-void ResetInputFields()
+void ClearInputFields()
 {
     // TODO: implement
     return;
@@ -155,15 +156,13 @@ void DrawEditorView()
 {
     // lock the GUI if any boxes are being edited
     if (coreAssetsEditMode || templateAssetsEditMode
-     || p1fighterEditMode || p2fighterEditMode
-     || p1costumeEditMode || p2costumeEditMode
+     || p1FighterEditMode || p2FighterEditMode
+     || p1CostumeEditMode || p2CostumeEditMode
     ) GuiLock();
     
     // draw the window itself
     if (windowIsOpen) windowIsOpen = !GuiWindowBox(windowDims, NULL);
-    if (GuiButton(githubRect, GuiIconText(RAYGUI_ICON_GITHUB_SMALL, NULL))) githubPressed = !githubPressed;
     if (GuiButton(helpRect, GuiIconText(RAYGUI_ICON_HELP_SMALL, NULL))) helpPressed = !helpPressed;
-    if (GuiButton(bugsRect, GuiIconText(RAYGUI_ICON_BUGS, NULL))) bugsPressed = !bugsPressed;
     
     // draw static elements
     GuiGroupBox(formatZoneRect, "Format Selection");
@@ -185,49 +184,32 @@ void DrawEditorView()
     DrawTexture(previewRenderTexture.texture, previewImageRect.x, previewImageRect.y, WHITE);
     
     // draw action buttons
-    if (GuiButton(resetRect, GuiIconText(RAYGUI_ICON_CLEAR, "Clear Fields"))) resetPressed = !resetPressed;
+    if (GuiButton(clearRect, GuiIconText(RAYGUI_ICON_CLEAR, "Clear Fields"))) clearPressed = !clearPressed;
     if (GuiButton(generateRect, GuiIconText(RAYGUI_ICON_PLAYER_PLAY, "Generate"))) generatePressed = !generatePressed;
     
     // draw match information boxes
-    if (GuiTextBox(p1nameRect, p1name, 128, p1nameEditMode)) p1nameEditMode = !p1nameEditMode;
-    if (GuiTextBox(p2nameRect, p2name, 128, p2nameEditMode)) p2nameEditMode = !p2nameEditMode;
+    if (GuiTextBox(p1NameRect, p1Name, 128, p1NameEditMode)) p1NameEditMode = !p1NameEditMode;
+    if (GuiTextBox(p2NameRect, p2Name, 128, p2NameEditMode)) p2NameEditMode = !p2NameEditMode;
     if (GuiTextBox(tournamentNameRect, tournamentNameText, 128, tournamentNameEditMode)) tournamentNameEditMode = !tournamentNameEditMode;
     if (GuiValueBox(tournamentNumberRect, "", &tournamentNumberValue, 0, 999, tournamentNumberEditMode)) tournamentNumberEditMode = !tournamentNumberEditMode;
     if (GuiTextBox(matchDesignationRect, matchDesignationText, 128, matchDesignationEditMode)) matchDesignationEditMode = !matchDesignationEditMode;
     // draw fighter select boxes
-    if (GuiDropdownBox(p1fighterRect, p1fighterDisplayList, &p1fighterActive, p1fighterEditMode)) p1fighterEditMode = !p1fighterEditMode;
-    if (GuiDropdownBox(p2fighterRect, p2fighterDisplayList, &p2fighterActive, p2fighterEditMode)) p2fighterEditMode = !p2fighterEditMode;
+    if (GuiSearchDropdownBox(p1FighterRect, p1FighterQuery, 128, p1FighterList, &p1FighterChoice, p1FighterEditMode)) p1FighterEditMode = !p1FighterEditMode;
+    if (GuiSearchDropdownBox(p2FighterRect, p2FighterQuery, 128, p2FighterList, &p2FighterChoice, p2FighterEditMode)) p2FighterEditMode = !p2FighterEditMode;
     GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
-    if (GuiDropdownBox(p1costumeRect, p1costumeDisplayList, &p1costumeActive, p1costumeEditMode)) p1costumeEditMode = !p1costumeEditMode;
-    if (GuiDropdownBox(p2costumeRect, p2costumeDisplayList, &p2costumeActive, p2costumeEditMode)) p2costumeEditMode = !p2costumeEditMode;
+    if (GuiDropdownBox(p1CostumeRect, p1CostumeList, &p1CostumeActive, p1CostumeEditMode)) p1CostumeEditMode = !p1CostumeEditMode;
+    if (GuiDropdownBox(p2CostumeRect, p2CostumeList, &p2CostumeActive, p2CostumeEditMode)) p2CostumeEditMode = !p2CostumeEditMode;
     GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
     
     // draw format selection boxes
     if (GuiButton(reloadAssetsRect, GuiIconText(RAYGUI_ICON_RELOAD, NULL))) reloadAssetsPressed = !reloadAssetsPressed;
-    if (GuiDropdownBox(coreAssetsRect, coreAssetsList, &coreAssetsActive, coreAssetsEditMode)) coreAssetsEditMode = !coreAssetsEditMode;
-    if (GuiDropdownBox(templateAssetsRect, templateAssetsList, &templateAssetsActive, templateAssetsEditMode)) templateAssetsEditMode = !templateAssetsEditMode;
+    if (GuiSearchDropdownBox(coreAssetsRect, coreAssetsQuery, 128, coreAssetsList, &coreAssetsChoice, coreAssetsEditMode)) coreAssetsEditMode = !coreAssetsEditMode;
+    if (GuiSearchDropdownBox(templateAssetsRect, templateAssetsQuery, 128, templateAssetsList, &templateAssetsChoice, templateAssetsEditMode)) templateAssetsEditMode = !templateAssetsEditMode;
     
     // unlock the GUI if it was locked for input
     GuiUnlock();
 }
 
-
-/*
-void SetupFolderEnvironment()
-{
-    // create necessary directories
-#if defined(_WIN32)
-    _mkdir("./cores");
-    _mkdir("./templates");
-    _mkdir("./output");
-#else
-    mkdir("./cores", 0700);
-    mkdir("./templates", 0700);
-    mkdir("./output", 0700);
-#endif
-    // 
-}
-*/
 
 
 
@@ -314,28 +296,20 @@ int main()
             beingDragged = true;
         }
         // handle link buttons
-        if (githubPressed) {
-            OpenURLHidden("https://github.com/Augumat/tgen");
-            githubPressed = !githubPressed;
-        }
         if (helpPressed) {
-            //OpenURLHidden("https://github.com/Augumat/tgen/wiki");
-            // TODO: implement when going public
+            OpenURLHidden("https://github.com/Augumat/tgen/wiki");
             helpPressed = !helpPressed;
         }
-        if (bugsPressed) {
-            OpenURLHidden("https://github.com/Augumat/tgen/issues");
-            bugsPressed = !bugsPressed;
-        }
         // handle switching format info
-        if (!coreAssetsEditMode) ResetInputFields();
-        if (!templateAssetsEditMode) ResetInputFields();
+        //TODO: fix this, it's definitely not what it's supposed to be
+        if (!coreAssetsEditMode) ClearInputFields();
+        if (!templateAssetsEditMode) ClearInputFields();
         // handle player info input
         //stub
         // handle action buttons
-        if (resetPressed) {
-            //stub
-            resetPressed = !resetPressed;
+        if (clearPressed) {
+            ClearInputFields();
+            clearPressed = !clearPressed;
         }
         if (generatePressed) {
             CompositeThumbnail(&previewRenderTexture);
