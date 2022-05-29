@@ -123,7 +123,7 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
         // updates for the text box
         int key = GetCharPressed();
         int keyCount = (int)strlen(query);
-        // Only allow keys in range [32..125]
+        // only allow keys in range [32..125]
         if (keyCount < (queryMaxLength - 1)) {
             float maxWidth = (bounds.width - (GuiGetStyle(TEXTBOX, TEXT_INNER_PADDING) * 2));
             if ((GetTextWidth(query) < (maxWidth - GuiGetStyle(DEFAULT, TEXT_SIZE))) && (key >= 32)) {
@@ -136,7 +136,7 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
                 query[keyCount] = '\0';
             }
         }
-        // Delete text
+        // delete a character if backspace is pressed
         if (keyCount > 0) {
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 keyCount--;
@@ -150,10 +150,13 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
             if (IsKeyPressed(KEY_DOWN) && cellSelected < (visibleCount - 1)) cellSelected++;
             *choice = idxInOriginal[cellSelected];
         }
-        // autofill first matching choice if hitting enter or clicking off
+        // autofill currently selected element if hitting enter or clicking off
         if (IsKeyPressed(KEY_ENTER) || (!CheckCollisionPointRec(mousePoint, boundsOpen) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))) {
             *choice = idxInOriginal[cellSelected];
+            // clear the query string so it will be empty next time
+            // the box is selected
             query[0] = '\0';
+            // set the return flag
             pressed = true;
         }
         // check text alignment to position cursor properly
@@ -163,19 +166,18 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
         } else if (textAlignment == GUI_TEXT_ALIGN_RIGHT) {
             cursor.x = bounds.x + bounds.width - GuiGetStyle(TEXTBOX, TEXT_INNER_PADDING);
         }
-        
         // updates for the expanded list panel
-        if ((state != GUI_STATE_DISABLED) && (editMode || !guiLocked) && (eCount > 1)) {
+        if ((state != GUI_STATE_DISABLED) && !guiLocked && (eCount > 1)) {
             state = GUI_STATE_PRESSED;
-            // Check if mouse has been pressed or released outside limits
+            // check if mouse has been pressed or released outside bounds
             if (!CheckCollisionPointRec(mousePoint, boundsOpen)) {
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) pressed = true;
             }
-            // Check if already selected item has been pressed again
+            // check if currently selected item has been pressed again
             if (CheckCollisionPointRec(mousePoint, bounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) pressed = true;
-            // Check focused and selected item
+            // check focused and selected item
             for (int i = 0; i < eCount; ++i) {
-                // Update item rectangle y position for next item
+                // update y position for next element cell
                 itemBounds.y += (bounds.height + GuiGetStyle(DROPDOWNBOX, DROPDOWN_ITEMS_PADDING));
                 if (CheckCollisionPointRec(mousePoint, itemBounds)) {
                     cellFocused = i;
@@ -288,7 +290,7 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
         );
         // draw dropdown arrow
         GuiDrawText(
-            "#120#",
+            GuiIconText(RAYGUI_ICON_ARROW_BOTTOM_FILL, NULL),
             RAYGUI_CLITERAL(Rectangle){ bounds.x + bounds.width - GuiGetStyle(DROPDOWNBOX, ARROW_PADDING), bounds.y + bounds.height/2 - 6, 10, 10 },
             GUI_TEXT_ALIGN_CENTER,
             Fade(GetColor(GuiGetStyle(DROPDOWNBOX, TEXT + (state*3))), guiAlpha)
