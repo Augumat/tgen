@@ -19,7 +19,7 @@ echo
 echo > Compile program
 echo -----------------------
 windres windows/tgen.rc -O coff -o tgen.res
-$(CC) -o tgen.exe $(FILE_NAME) $(CFLAGS) $(LDFLAGS) windows/resource.h tgen.res windows/winwrapper.h windows/winwrapper.c
+$(CC) -o tgen.exe main.c $(CFLAGS) $(LDFLAGS) windows/resource.h tgen.res windows/winwrapper.h windows/winwrapper.c
 echo
 echo > Move program files
 echo -----------------------
