@@ -9,6 +9,7 @@
 #include "windows/winwrapper.h"
 #include "augui.h"
 #include "generator.h"
+#include "loader.h"
 // testing
 //#include <stdio.h>
 
