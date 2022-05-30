@@ -1,5 +1,5 @@
 #include "ray/raylib.h"
-
+#include "loader.h"
 
 
 
@@ -34,14 +34,6 @@ typedef struct ThumbnailSpec {
     char[128] p2name;
     int p2fighter;
     int p2costume;
-    // p3 info
-    char[128] p3name;
-    int p3fighter;
-    int p3costume;
-    // p4 info
-    char[128] p4name;
-    int p4fighter;
-    int p4costume;
 } ThumbnailSpec;
 */
 
