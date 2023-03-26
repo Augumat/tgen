@@ -50,7 +50,7 @@ void CompositeThumbnail(RenderTexture2D* preview/* , ThumbnailSpec* spec */)
     // compositing
     BeginTextureMode(buf);
         // TODO: take method argument struct and display components here
-        DrawCircle(320, 320, 100.0, RED);
+        DrawCircle(320, 320, 640.0, RED);
     EndTextureMode();
     
     // write the composite to an Image
@@ -67,7 +67,7 @@ void CompositeThumbnail(RenderTexture2D* preview/* , ThumbnailSpec* spec */)
     UnloadRenderTexture(buf);
     
     // export the thumbnail
-    _mkdir("./output");
+    mkdir("./output");
     //char path[512] = { 0 };
     //strcpy(path, TextFormat("%s/%s", CORE.Storage.basePath, fileName));
     ExportImage(generatedThumbnail, "./output/test.png");
@@ -92,6 +92,6 @@ void CompositeBatch(char** files, int fileCount)
             //strcpy(path, TextFormat("%s/%s", CORE.Storage.basePath, fileName));
             //stub
         //}
-        files[i];
+        printf("%s\n", files[i]);
     }
 }

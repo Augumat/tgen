@@ -71,8 +71,8 @@ bool GuiSearchDropdownBox(Rectangle bounds, char* query, int queryMaxLength, con
         // attempt to match the current element to the query
         char lowerSrc = tolower(elements[srcIdx]);
         char lowerQ = tolower(query[runMatches]);
-        if (curMatches || lowerSrc < 'a' || lowerSrc > 'z') {
-            // if the current character isn't alphabetical (queries only match
+        if (curMatches || lowerSrc < '0' || lowerSrc > 'z' || (lowerSrc > '9' && lowerSrc < 'a')) {
+            // if the current character isn't alphanumeric (queries only match
             // to plaintext) or already has a matching run, simply continue to
             // copy the element over
         } else if (lowerSrc == lowerQ) {

@@ -6,7 +6,7 @@ ENV_SET PATH=$(COMPILER_PATH)
 SET CC=gcc
 SET CFLAGS=-s -static -Os -std=c99 -Wall -I$(RAYLIB_PATH)\src -Iexternal -DPLATFORM_DESKTOP -Wl,--subsystem,windows
 SET LDFLAGS=-lraylib -lopengl32 -lgdi32 -lwinmm
-cd $(CURRENT_DIRECTORY)
+cd D:\projects\thumbnail-generator\thumbnail-generator\tgen\src
 echo
 echo > Clean latest build
 echo ------------------------

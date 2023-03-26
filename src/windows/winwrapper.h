@@ -5,3 +5,5 @@ void* LoadPackagedResource(unsigned long typeId, unsigned long resourceId, unsig
 
 // function to open a URL in the user's preferred browser
 void OpenURLHidden(char* url);
+
+// TODO file I/O utilities belong here

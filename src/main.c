@@ -249,19 +249,21 @@ int main()
     //generatedThumbnail = GenImageColor(1280, 720, WHITE);
     previewRenderTexture = LoadRenderTexture(360, 202);
     
-    // Load resource cores
+    // Load resources
     //--------------------------------------------------------------------------------------
     // TODO: implement
-    //--------------------------------------------------------------------------------------
-    
-    // Load templates
-    //--------------------------------------------------------------------------------------
-    // TODO: implement
+    int stat = 0;//TGLoadResources();
+    if (stat) {
+        printf("failed with error code %i\n", stat);
+        return 1;
+    }
     //--------------------------------------------------------------------------------------
     
     // Load format selections and persistant settings
     //--------------------------------------------------------------------------------------
     // TODO: implement
+    //load settings
+    //load format selections
     //--------------------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------------------
@@ -303,8 +305,8 @@ int main()
         }
         // handle switching format info
         //TODO: fix this, it's definitely not what it's supposed to be
-        if (!coreAssetsEditMode) ClearInputFields();
-        if (!templateAssetsEditMode) ClearInputFields();
+        if (!coreAssetsEditMode) /*stub*/;
+        if (!templateAssetsEditMode) /*stub*/;
         // handle player info input
         //stub
         // handle action buttons
@@ -350,12 +352,16 @@ int main()
     // Save format selections and settings
     //--------------------------------------------------------------------------------------
     // TODO: implement
+    //save format selections
+    //save settings
+    //
     //--------------------------------------------------------------------------------------
     
     // Cleanup
     //--------------------------------------------------------------------------------------
     CloseWindow();
     UnloadRenderTexture(previewRenderTexture);
+    TGUnloadResources();
     //--------------------------------------------------------------------------------------
 
     return 0;
